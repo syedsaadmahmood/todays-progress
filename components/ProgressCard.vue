@@ -54,7 +54,7 @@
             :class="{ 
               'completed': day.completed, 
               'active': index === activeDay,
-              'connected': index < history.length - 1 && day.completed && history[index + 1].completed
+              'connected': index < history.length - 1 && day.progress && history[index + 1].progress
             }"
           >
             <v-icon v-if="day.completed" color="white">mdi-check</v-icon>

@@ -34,12 +34,12 @@ export default {
     return {
       history: [
         { label: 'M', completed: true, progress: true, current: 900, total: 1000 },
-        { label: 'T', completed: true, progress: true, current: 700, total: 1000 },
-        { label: 'W', completed: true, progress: false },
-        { label: 'Th', completed: false, progress: false },
-        { label: 'F', completed: false, progress: false },
-        { label: 'Sat', completed: false, progress: false },
-        { label: 'Su', completed: false, progress: false }
+        { label: 'T', completed: false, progress: true, current: 700, total: 1000 },
+        { label: 'W', completed: false, progress: false, current: 600, total: 1000 },
+        { label: 'Th', completed: false, progress: false, current: 0, total: 1000 },
+        { label: 'F', completed: false, progress: false, current: 0, total: 1000 },
+        { label: 'Sat', completed: false, progress: false, current: 0, total: 1000 },
+        { label: 'Su', completed: false, progress: false, current: 0, total: 1000 }
       ],
       activeDay: 1,
       dailyTarget: 1000

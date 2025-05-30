@@ -9,12 +9,12 @@ describe('ProgressCard', () => {
       propsData: {
         history: [
           { label: 'M', completed: true, progress: true, current: 900, total: 1000 },
-          { label: 'T', completed: true, progress: true, current: 700, total: 1000 },
-          { label: 'W', completed: false, progress: false },
-          { label: 'Th', completed: false, progress: false },
-          { label: 'F', completed: false, progress: false },
-          { label: 'Sat', completed: false, progress: false },
-          { label: 'Su', completed: false, progress: false }
+          { label: 'T', completed: false, progress: true, current: 700, total: 1000 },
+          { label: 'W', completed: false, progress: false, current: 600, total: 1000 },
+          { label: 'Th', completed: false, progress: false, current: 0, total: 1000 },
+          { label: 'F', completed: false, progress: false, current: 0, total: 1000 },
+          { label: 'Sat', completed: false, progress: false, current: 0, total: 1000 },
+          { label: 'Su', completed: false, progress: false, current: 0, total: 1000 }
         ],
         activeDay: 1,
         dailyTarget: 1000,
@@ -82,10 +82,57 @@ describe('ProgressCard', () => {
 
     it('should mark completed days correctly', () => {
       const firstDayCircle = wrapper.findAll('.day-circle').at(0)
-      const secondDayCircle = wrapper.findAll('.day-circle').at(1)
-      
       expect(firstDayCircle.classes()).toContain('completed')
-      expect(secondDayCircle.classes()).toContain('completed')
+    })
+    
+    it('should connect days with progress', () => {
+      const firstDayCircle = wrapper.findAll('.day-circle').at(0)
+      expect(firstDayCircle.classes()).toContain('connected')
+    })
+    
+    it('should display the label from data', () => {
+      expect(wrapper.vm.label).toBe('Per Day')
+      expect(wrapper.find('.label').text()).toBe('Per Day')
+    })
+  })
+
+  describe('updating target', () => {
+    it('should call onUpdateTarget with the new target value', async () => {
+      // First show the dialog to trigger the watcher
+      wrapper.setData({ showTargetDialog: true })
+      await wrapper.vm.$nextTick()
+      
+      // Then set the new target
+      wrapper.setData({ newTarget: 1500 })
+      await wrapper.vm.$nextTick()
+      
+      // Now call updateTarget
+      await wrapper.vm.updateTarget()
+      
+      expect(wrapper.vm.onUpdateTarget).toHaveBeenCalledWith(1500)
+      expect(wrapper.vm.showTargetDialog).toBe(false)
+    })
+    
+    it('should not call onUpdateTarget with invalid values', async () => {
+      const mockFn = jest.fn()
+      wrapper.setProps({ onUpdateTarget: mockFn })
+      
+      // First show the dialog to trigger the watcher
+      wrapper.setData({ showTargetDialog: true })
+      await wrapper.vm.$nextTick()
+      
+      // Then set an invalid target
+      wrapper.setData({ newTarget: 0 })
+      await wrapper.vm.$nextTick()
+      
+      // Reset the mock to clear any previous calls
+      mockFn.mockReset()
+      
+      // Now call updateTarget
+      await wrapper.vm.updateTarget()
+      
+      expect(mockFn).not.toHaveBeenCalled()
+      expect(wrapper.vm.showTargetDialog).toBe(true)
     })
   })
 })
