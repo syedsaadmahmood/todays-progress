@@ -108,10 +108,6 @@ export default {
       type: Number,
       required: true
     },
-    label: {
-      type: String,
-      default: 'Per Day'
-    },
     onUpdateTarget: {
       type: Function,
       required: true
@@ -120,7 +116,8 @@ export default {
   data() {
     return {
       showTargetDialog: false,
-      newTarget: null
+      newTarget: null,
+      label: 'Per Day'
     }
   },
   computed: {

@@ -15,7 +15,6 @@
             :history="history" 
             :activeDay="activeDay" 
             :dailyTarget="dailyTarget"
-            label="Per Day"
             :onUpdateTarget="updateDailyTarget"
           />
         </v-card>
@@ -53,7 +52,6 @@ export default {
         ...day,
         total: day.progress ? newTarget : day.total
       }));
-      // In a real app, you might want to save this to localStorage or a backend
     }
   }
 }

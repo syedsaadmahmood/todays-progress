@@ -18,7 +18,6 @@ describe('ProgressCard', () => {
         ],
         activeDay: 1,
         dailyTarget: 1000,
-        label: 'Per Day',
         onUpdateTarget: jest.fn()
       }
     })
