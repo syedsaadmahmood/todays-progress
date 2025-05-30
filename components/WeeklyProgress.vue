@@ -11,15 +11,17 @@
           class="day-circle" 
           :class="{ 
             'completed': day.completed, 
-            'active': day.active,
+            'active': index === activeDay,
             'connected': index < days.length - 1 && day.completed && days[index + 1].completed
           }"
         >
           <v-icon v-if="day.completed" color="white">mdi-check</v-icon>
-          <v-icon v-if="day.active" s color="black">mdi-check</v-icon>
+          <v-icon v-if="index === activeDay" color="black">mdi-check</v-icon>
         </div>
-        <div class="day-progress" v-if="day.progress">
-          {{ day.current }}/{{ day.total }}
+        <div class="day-progress" v-if="day.progress || index === activeDay">
+          <span :class="{ 'active-progress': index === activeDay }">
+            {{ day.current || 0 }}/{{ day.total || dailyTarget }}
+          </span>
         </div>
       </div>
     </div>
@@ -29,17 +31,38 @@
 <script>
 export default {
   name: 'WeeklyProgress',
+  props: {
+    activeDay: {
+      type: Number,
+      default: 0
+    },
+    dailyTarget: {
+      type: Number,
+      default: 1000
+    }
+  },
   data() {
     return {
       days: [
-        { label: 'M', completed: true, active: false, progress: true, current: 900, total: 1000 },
-        { label: 'T', completed: true, active: true, progress: true, current: 700, total: 1000 },
-        { label: 'W', completed: false, active: false, progress: false },
-        { label: 'Th', completed: false, active: false, progress: false },
-        { label: 'F', completed: false, active: false, progress: false },
-        { label: 'Sat', completed: false, active: false, progress: false },
-        { label: 'Su', completed: false, active: false, progress: false }
+        { label: 'M', completed: true, progress: true, current: 900, total: 1000 },
+        { label: 'T', completed: true, progress: true, current: 700, total: 1000 },
+        { label: 'W', completed: false, progress: false },
+        { label: 'Th', completed: false, progress: false },
+        { label: 'F', completed: false, progress: false },
+        { label: 'Sat', completed: false, progress: false },
+        { label: 'Su', completed: false, progress: false }
       ]
+    }
+  },
+  watch: {
+    dailyTarget: {
+      handler(newTarget) {
+        this.days = this.days.map(day => ({
+          ...day,
+          total: day.progress ? newTarget : day.total
+        }));
+      },
+      immediate: true
     }
   },
   methods: {
@@ -119,6 +142,11 @@ export default {
 .day-progress {
   font-size: 14px;
   color: #666;
+}
+
+.active-progress {
+  font-weight: bold;
+  color: #009688;
 }
 
 @media (max-width: 600px) {

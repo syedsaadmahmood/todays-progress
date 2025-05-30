@@ -25,7 +25,7 @@
     <v-row>
       <v-col cols="12">
         <v-card class="rounded-lg" elevation="2">
-          <WeeklyProgress />
+          <WeeklyProgress :activeDay="activeDay" :dailyTarget="dailyTarget" />
         </v-card>
       </v-col>
     </v-row>
@@ -52,7 +52,6 @@ export default {
     updateDailyTarget(newTarget) {
       this.dailyTarget = newTarget;
       // In a real app, you might want to save this to localStorage or a backend
-      console.log(`Daily target updated to: ${newTarget}`);
     }
   }
 }
