@@ -1,5 +1,7 @@
 # todays-progress
 
+A Vue.js application for tracking daily writing progress with visual feedback.
+
 ## Build Setup
 
 ```bash
@@ -13,11 +15,19 @@ $ npm run dev
 $ npm run build
 $ npm run start
 
-# generate static project
-$ npm run generate
+# run unit tests
+$ npm run test
 ```
 
-For detailed explanation on how things work, check out the [documentation](https://nuxtjs.org).
+## Testing
+
+The project uses Jest for unit testing. Test files are located in the `test` directory and follow the naming convention `*.test.js`. The test configuration can be found in `jest.config.js`.
+
+Key testing features:
+- Vue Test Utils for component testing
+- Jest for test runner and assertions
+- Watch mode for development
+- JSDOM test environment for DOM manipulation
 
 ## Special Directories
 
@@ -67,3 +77,5 @@ More information about the usage of this directory in [the documentation](https:
 This directory contains your Vuex store files. Creating a file in this directory automatically activates Vuex.
 
 More information about the usage of this directory in [the documentation](https://nuxtjs.org/docs/2.x/directory-structure/store).
+
+For detailed explanation on how things work, check out the [documentation](https://nuxtjs.org).
