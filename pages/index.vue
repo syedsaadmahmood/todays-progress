@@ -11,8 +11,8 @@
     <v-row>
       <v-col cols="12">
         <v-card class="rounded-lg" elevation="2">
-          <ProgressCircle 
-            :history="progressHistory" 
+          <ProgressCard 
+            :history="history" 
             :activeDay="activeDay" 
             :dailyTarget="dailyTarget"
             label="Per Day"
@@ -21,29 +21,27 @@
         </v-card>
       </v-col>
     </v-row>
-
-    <v-row>
-      <v-col cols="12">
-        <v-card class="rounded-lg" elevation="2">
-          <WeeklyProgress :activeDay="activeDay" :dailyTarget="dailyTarget" />
-        </v-card>
-      </v-col>
-    </v-row>
   </v-container>
 </template>
 
 <script>
-import ProgressCircle from '~/components/ProgressCircle.vue'
-import WeeklyProgress from '~/components/WeeklyProgress.vue'
+import ProgressCard from '~/components/ProgressCard.vue'
 
 export default {
   components: {
-    ProgressCircle,
-    WeeklyProgress
+    ProgressCard
   },
   data() {
     return {
-      progressHistory: [800, 700, 500, 900, 600, 300, 450],
+      history: [
+        { label: 'M', completed: true, progress: true, current: 900, total: 1000 },
+        { label: 'T', completed: true, progress: true, current: 700, total: 1000 },
+        { label: 'W', completed: true, progress: false },
+        { label: 'Th', completed: false, progress: false },
+        { label: 'F', completed: false, progress: false },
+        { label: 'Sat', completed: false, progress: false },
+        { label: 'Su', completed: false, progress: false }
+      ],
       activeDay: 1,
       dailyTarget: 1000
     }
@@ -51,6 +49,10 @@ export default {
   methods: {
     updateDailyTarget(newTarget) {
       this.dailyTarget = newTarget;
+      this.history = this.history.map(day => ({
+        ...day,
+        total: day.progress ? newTarget : day.total
+      }));
       // In a real app, you might want to save this to localStorage or a backend
     }
   }

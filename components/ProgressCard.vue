@@ -41,6 +41,34 @@
       <span v-if="percentage < 100">Keep going — {{ remainingToTarget }} words to target!</span>
     </v-tooltip>
 
+    <div class="weekly-progress">
+      <div class="days-container">
+        <div 
+          v-for="(day, index) in history" 
+          :key="index" 
+          class="day-item"
+        >
+          <div class="day-label">{{ day.label }}</div>
+          <div 
+            class="day-circle" 
+            :class="{ 
+              'completed': day.completed, 
+              'active': index === activeDay,
+              'connected': index < history.length - 1 && day.completed && history[index + 1].completed
+            }"
+          >
+            <v-icon v-if="day.completed" color="white">mdi-check</v-icon>
+            <v-icon v-if="index === activeDay" color="black">mdi-check</v-icon>
+          </div>
+          <div class="day-progress" v-if="day.progress || index === activeDay">
+            <span :class="{ 'active-progress': index === activeDay }">
+              {{ day.current || 0 }}/{{ day.total || dailyTarget }}
+            </span>
+          </div>
+        </div>
+      </div>
+    </div>
+
     <v-dialog v-model="showTargetDialog" max-width="400px">
       <v-card>
         <v-card-title>Set Daily Target</v-card-title>
@@ -66,7 +94,7 @@
 
 <script>
 export default {
-  name: 'ProgressCircle',
+  name: 'ProgressCard',
   props: {
     history: {
       type: Array,
@@ -97,10 +125,12 @@ export default {
   },
   computed: {
     currentValue() {
-      return this.history[this.activeDay] || 0;
+      const activeDay = this.history[this.activeDay];
+      return activeDay && activeDay.current ? activeDay.current : 0;
     },
     targetValue() {
-      return this.dailyTarget;
+      const activeDay = this.history[this.activeDay];
+      return activeDay && activeDay.total ? activeDay.total : this.dailyTarget;
     },
     percentage() {
       if (this.targetValue === 0) return 0;
@@ -118,6 +148,11 @@ export default {
         this.onUpdateTarget(this.newTarget);
         this.showTargetDialog = false;
       }
+    },
+    getClampedPercentage(current, total) {
+      if (total === 0) return 0;
+      const percentage = (current / total) * 100;
+      return Math.min(percentage, 100);
     }
   },
   watch: {
@@ -213,7 +248,85 @@ export default {
   stroke-linecap: round;
 }
 
+.weekly-progress {
+  padding: 20px;
+  background-color: white;
+  border-radius: 10px;
+  margin: 20px 0;
+  width: 100%;
+}
+
+.days-container {
+  display: flex;
+  position: relative;
+}
+
+.day-item {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  position: relative;
+  flex: 1;
+}
+
+.day-label {
+  margin-bottom: 10px;
+  font-weight: 500;
+  color: #666;
+}
+
+.day-circle {
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  background-color: #e0e0e0;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  margin-bottom: 10px;
+  position: relative;
+  z-index: 2;
+}
+
+.day-circle.completed {
+  background-color: #009688;
+}
+
+.day-circle.active {
+  border: 2px solid #009688;
+  background-color: white;
+  color: #009688;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  position: relative;
+}
+
+.day-circle .v-icon {
+  margin: 0;
+  padding: 0;
+  font-size: 18px;
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+}
+
+.day-progress {
+  font-size: 14px;
+  color: #666;
+}
+
+.active-progress {
+  font-weight: bold;
+  color: #009688;
+}
+
 @media (max-width: 600px) {
+  .day-progress {
+    font-size: 9px;
+  }
+  
   .progress-circle-container {
     padding: 10px;
   }
@@ -232,6 +345,36 @@ export default {
   
   .day-pill {
     width: 25px;
+  }
+}
+
+.day-circle.connected::after {
+  content: '';
+  position: absolute;
+  height: 2px;
+  background-color: #009688;
+  width: calc(100% + 80px);
+  top: 50%;
+  left: 50%;
+  z-index: 1;
+  transform: translateX(20px);
+}
+
+@media (max-width: 1270px) {
+  .day-circle.connected::after {
+    width: calc(100% + 60px);
+  }
+}
+
+@media (max-width: 800px) {
+  .day-circle.connected::after {
+    width: calc(100% + 20px);
+  }
+}
+
+@media (max-width: 600px) {
+  .day-circle.connected::after {
+    width: calc(100%);
   }
 }
 </style>
